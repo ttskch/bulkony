@@ -9,7 +9,7 @@ class Context implements \ArrayAccess, \IteratorAggregate, \Countable
     /**
      * @var array
      */
-    private $container;
+    private $container = [];
 
     /**
      * @see \ArrayAccess
