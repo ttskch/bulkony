@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ttskch\Bulkony\Import\Preview;
 
+use Ttskch\Bulkony\Exception\OutOfBoundsException;
+
 class Row implements \IteratorAggregate
 {
     /**
@@ -45,6 +47,17 @@ class Row implements \IteratorAggregate
         }
 
         return null;
+    }
+
+    public function remove(string $csvHeading, bool $strict = false): self
+    {
+        if ($strict && !isset($this->cells[$csvHeading])) {
+            throw new OutOfBoundsException();
+        }
+
+        unset($this->cells[$csvHeading]);
+
+        return $this;
     }
 
     public function upsert(Cell $cell): self
