@@ -48,8 +48,11 @@ class Importer
                 $rowVisitor->validate($csvRow, $errorList, $context);
 
                 if (!$errorList->isEmpty()) {
-                    $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
+                    $continue = $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
                     $this->errorListCollection->upsert($errorList);
+                    if (!$continue) {
+                        break;
+                    }
                 } else {
                     $importations[] = function () use ($rowVisitor, $csvRow, $context) {
                         $rowVisitor->import($csvRow, $context);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ttskch\Bulkony\Import;
 
 use PHPUnit\Framework\TestCase;
+use Ttskch\Bulkony\Fake\RowVisitor\AbortableValidatableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\AllOrNothingValidatablePreviewableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\AllOrNothingValidatableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\PreviewableRowVisitor;
@@ -63,6 +64,24 @@ EOS;
 [validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
 [import] {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
 [import] {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
+EOS;
+        $this->assertEquals($expectedEchoed, $echoed);
+    }
+
+    /** @group tmp */
+    public function testWithAbortableValidatableRowVisitor()
+    {
+        // validatable row visitor
+        $rowVisitor = new AbortableValidatableRowVisitor();
+
+        ob_start();
+        $this->importer->import($this->csvFilePath, $rowVisitor);
+        $echoed = trim(ob_get_clean());
+        $expectedEchoed = <<<EOS
+[validate] {"id":"1","name":"alice","email":"alice@example.com"}
+[validate] {"id":"2","name":"bob","email":"bob@example.com"}
+[onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
+[import] {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
 EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }

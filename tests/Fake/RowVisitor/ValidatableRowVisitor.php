@@ -21,9 +21,11 @@ class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorI
         echo sprintf("[validate] %s\n", json_encode($csvRow, JSON_UNESCAPED_UNICODE));
     }
 
-    public function onError(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void
+    public function onError(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): bool
     {
         echo sprintf("[onError] csv line %d: %s\n", $csvLineNumber, json_encode($csvRow, JSON_UNESCAPED_UNICODE));
+
+        return ValidatableRowVisitorInterface::CONTINUE_ON_ERROR;
     }
 
     public function getAllOrNothing(): bool
