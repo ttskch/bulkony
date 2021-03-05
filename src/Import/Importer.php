@@ -40,53 +40,30 @@ class Importer
         /** @var \Closure[] */
         $importations = [];
 
-        // all or nothing
-        if ($rowVisitor instanceof ValidatableRowVisitorInterface && $rowVisitor->getAllOrNothing()) {
-            $doNothing = false;
+        foreach ($csvRows as $i => $csvRow) {
+            $context = new Context();
 
-            foreach ($csvRows as $i => $csvRow) {
-                $context = new Context();
-
+            if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
                 $errorList = new ErrorList($i + 1);
                 $rowVisitor->validate($csvRow, $errorList, $context);
 
                 if (!$errorList->isEmpty()) {
                     $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
                     $this->errorListCollection->upsert($errorList);
-                    $doNothing = true;
-                }
-
-                $importations[] = function () use ($rowVisitor, $csvRow, $context) {
-                    $rowVisitor->import($csvRow, $context);
-                };
-            }
-
-            if ($doNothing) {
-                $importations = [];
-            }
-
-        // normal
-        } else {
-            foreach ($csvRows as $i => $csvRow) {
-                $context = new Context();
-
-                if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
-                    $errorList = new ErrorList($i + 1);
-                    $rowVisitor->validate($csvRow, $errorList, $context);
-
-                    if (!$errorList->isEmpty()) {
-                        $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
-                    } else {
-                        $importations[] = function () use ($rowVisitor, $csvRow, $context) {
-                            $rowVisitor->import($csvRow, $context);
-                        };
-                    }
                 } else {
                     $importations[] = function () use ($rowVisitor, $csvRow, $context) {
                         $rowVisitor->import($csvRow, $context);
                     };
                 }
+            } else {
+                $importations[] = function () use ($rowVisitor, $csvRow, $context) {
+                    $rowVisitor->import($csvRow, $context);
+                };
             }
+        }
+
+        if ($rowVisitor instanceof ValidatableRowVisitorInterface && $rowVisitor->getAllOrNothing() && !$this->errorListCollection->isEmpty()) {
+            return;
         }
 
         foreach ($importations as $importation) {
