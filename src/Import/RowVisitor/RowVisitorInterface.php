@@ -6,5 +6,5 @@ namespace Ttskch\Bulkony\Import\RowVisitor;
 
 interface RowVisitorInterface
 {
-    public function import(array $csvRow, Context $context): void;
+    public function import(array $csvRow, int $csvLineNumber, Context $context): void;
 }

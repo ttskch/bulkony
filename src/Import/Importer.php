@@ -37,40 +37,25 @@ class Importer
     {
         $csvRows = $this->getCsvReader($csvFilePath)->getRecords();
 
-        /** @var \Closure[] */
-        $importations = [];
+        $context = new Context();
 
         foreach ($csvRows as $i => $csvRow) {
-            $context = new Context();
-
             if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
                 $errorList = new ErrorList($i + 1);
                 $rowVisitor->validate($csvRow, $errorList, $context);
 
                 if (!$errorList->isEmpty()) {
-                    $continue = $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
+                    $continue = $rowVisitor->onError($csvRow, $errorList, $context);
                     $this->errorListCollection->upsert($errorList);
                     if (!$continue) {
                         break;
                     }
                 } else {
-                    $importations[] = function () use ($rowVisitor, $csvRow, $context) {
-                        $rowVisitor->import($csvRow, $context);
-                    };
+                    $rowVisitor->import($csvRow, $i + 1, $context);
                 }
             } else {
-                $importations[] = function () use ($rowVisitor, $csvRow, $context) {
-                    $rowVisitor->import($csvRow, $context);
-                };
+                $rowVisitor->import($csvRow, $i + 1, $context);
             }
-        }
-
-        if ($rowVisitor instanceof ValidatableRowVisitorInterface && $rowVisitor->getAllOrNothing() && !$this->errorListCollection->isEmpty()) {
-            return;
-        }
-
-        foreach ($importations as $importation) {
-            $importation();
         }
     }
 

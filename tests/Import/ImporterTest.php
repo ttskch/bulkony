@@ -6,8 +6,6 @@ namespace Ttskch\Bulkony\Import;
 
 use PHPUnit\Framework\TestCase;
 use Ttskch\Bulkony\Fake\RowVisitor\AbortableValidatableRowVisitor;
-use Ttskch\Bulkony\Fake\RowVisitor\AllOrNothingValidatablePreviewableRowVisitor;
-use Ttskch\Bulkony\Fake\RowVisitor\AllOrNothingValidatableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\PreviewableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\RowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\ValidatablePreviewableRowVisitor;
@@ -42,9 +40,9 @@ EOS;
         $this->importer->import($this->csvFilePath, $rowVisitor);
         $echoed = trim(ob_get_clean());
         $expectedEchoed = <<<EOS
-[import] {"id":"1","name":"alice","email":"alice@example.com"} with ''
-[import] {"id":"2","name":"bob","email":"bob@example.com"} with ''
-[import] {"id":"3","name":"charlie","email":"charlie@example.com"} with ''
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with ''
+[import] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"} with ''
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with ''
 EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
@@ -58,17 +56,16 @@ EOS;
         $this->importer->import($this->csvFilePath, $rowVisitor);
         $echoed = trim(ob_get_clean());
         $expectedEchoed = <<<EOS
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
+[validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
+[validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
-[validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
-[import] {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
-[import] {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
+[validate] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"}
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
 EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
 
-    /** @group tmp */
     public function testWithAbortableValidatableRowVisitor()
     {
         // validatable row visitor
@@ -78,27 +75,10 @@ EOS;
         $this->importer->import($this->csvFilePath, $rowVisitor);
         $echoed = trim(ob_get_clean());
         $expectedEchoed = <<<EOS
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
+[validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
+[validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
-[import] {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
-EOS;
-        $this->assertEquals($expectedEchoed, $echoed);
-    }
-
-    public function testWithAllOrNothingValidatableRowVisitor()
-    {
-        // validatable row visitor configured as all-or-nothing
-        $rowVisitor = new AllOrNothingValidatableRowVisitor();
-
-        ob_start();
-        $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
-        $expectedEchoed = <<<EOS
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
-[onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
-[validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
 EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
@@ -138,9 +118,9 @@ EOS1;
         $this->importer->import($this->csvFilePath, $rowVisitor);
         $echoed = trim(ob_get_clean());
         $expectedEchoed = <<<EOS2
-[import] {"id":"1","name":"alice","email":"alice@example.com"} with ''
-[import] {"id":"2","name":"bob","email":"bob@example.com"} with ''
-[import] {"id":"3","name":"charlie","email":"charlie@example.com"} with ''
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with ''
+[import] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"} with ''
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with ''
 EOS2;
         $this->assertEquals($expectedEchoed, $echoed);
     }
@@ -167,9 +147,9 @@ EOS2;
         $echoed = trim(ob_get_clean());
 
         $expectedEchoed = <<<EOS1
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
-[validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
+[validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
+[validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
+[validate] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"}
 EOS1;
 
         $this->assertEquals($expectedEchoed, $echoed);
@@ -192,67 +172,12 @@ EOS2;
         $this->importer->import($this->csvFilePath, $rowVisitor);
         $echoed = trim(ob_get_clean());
         $expectedEchoed = <<<EOS3
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
+[validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
+[validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
-[validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
-[import] {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
-[import] {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
-EOS3;
-        $this->assertEquals($expectedEchoed, $echoed);
-    }
-
-    public function testWithAllOrNothingValidatablePreviewableRowVisitor()
-    {
-        // validatable and previewable row visitor configured as all-or-nothing
-        $rowVisitor = new AllOrNothingValidatablePreviewableRowVisitor();
-
-        $preview = $this->importer->preview($this->csvFilePath, $rowVisitor);
-
-        ob_start();
-
-        $previewContent = '';
-        /** @var Row $row */
-        foreach ($preview as $row) {
-            foreach (['id', 'name', 'email'] as $csvHeading) {
-                $cell = $row->get($csvHeading);
-                $previewContent .= sprintf("%d %s: %s %s (%d errors)\n", $row->getCsvLineNumber(), $cell->getCsvHeading(), $cell->getValue(), $cell->isChanged() ? 'changed' : 'not-changed', $cell->getError() ? count($cell->getError()->getMessages()) : 0);
-            }
-        }
-        $previewContent = trim($previewContent);
-
-        $echoed = trim(ob_get_clean());
-
-        $expectedEchoed = <<<EOS1
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
-[validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
-EOS1;
-
-        $this->assertEquals($expectedEchoed, $echoed);
-
-        $expectedPreviewContent = <<<EOS2
-2 id: 1 not-changed (0 errors)
-2 name: alice changed (0 errors)
-2 email: alice@example.com changed (0 errors)
-3 id: 2 not-changed (0 errors)
-3 name: bob changed (0 errors)
-3 email: bob@example.com changed (1 errors)
-4 id: 3 not-changed (0 errors)
-4 name: charlie changed (0 errors)
-4 email: charlie@example.com changed (0 errors)
-EOS2;
-
-        $this->assertEquals($expectedPreviewContent, $previewContent);
-
-        ob_start();
-        $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
-        $expectedEchoed = <<<EOS3
-[validate] {"id":"1","name":"alice","email":"alice@example.com"}
-[validate] {"id":"2","name":"bob","email":"bob@example.com"}
-[onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
-[validate] {"id":"3","name":"charlie","email":"charlie@example.com"}
+[validate] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"}
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
 EOS3;
         $this->assertEquals($expectedEchoed, $echoed);
     }

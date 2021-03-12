@@ -16,7 +16,5 @@ interface ValidatableRowVisitorInterface extends RowVisitorInterface
     /**
      * @return bool self::CONTINUE_ON_ERROR or self::ABORT_ON_ERROR
      */
-    public function onError(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): bool;
-
-    public function getAllOrNothing(): bool;
+    public function onError(array $csvRow, ErrorList $errorList, Context $context): bool;
 }
