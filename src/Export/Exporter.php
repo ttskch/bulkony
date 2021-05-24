@@ -11,21 +11,21 @@ class Exporter
 {
     public function export(string $csvFilePath, RowGeneratorInterface $rowGenerator): void
     {
-        $content = '';
+        $fp = fopen($csvFilePath, 'w+');
 
-        $content .= "\xef\xbb\xbf"; // add BOM for Excel
+        fwrite($fp, "\xef\xbb\xbf"); // add BOM for Excel
 
         foreach ($rowGenerator->getHeadingRows() as $headingRow) {
-            $content .= $this->rowToString($headingRow);
+            fwrite($fp, $this->rowToString($headingRow));
         }
 
         foreach ($rowGenerator->getBodyRowsIterator() as $rows) {
             foreach ($rows as $row) {
-                $content .= $this->rowToString($row);
+                fwrite($fp, $this->rowToString($row));
             }
         }
 
-        file_put_contents($csvFilePath, $content);
+        fclose($fp);
     }
 
 

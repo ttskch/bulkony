@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ttskch\Bulkony\Import;
 
+use League\Csv\AbstractCsv;
 use League\Csv\Reader;
 use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Preview;
@@ -93,9 +94,8 @@ class Importer
 
     private function getCsvReader(string $csvFilePath): Reader
     {
-        $content = ltrim(file_get_contents($csvFilePath), "\xef\xbb\xbf"); // remove BOM
-        $content = mb_convert_encoding($content, 'UTF-8', 'auto'); // in case of user-created file
-        $csv = Reader::createFromString($content);
+        /** @see AbstractCsv::$is_input_bom_included is false by default, so BOM will be skipped automatically */
+        $csv = Reader::createFromPath($csvFilePath);
         $csv->setHeaderOffset(0);
 
         return $csv;
