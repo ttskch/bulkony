@@ -114,8 +114,8 @@ return $response->send();
 return response()
     ->header('Content-Type', 'text/csv')
     ->streamDownload(function () use ($exporter, $rowGenerator) {
-    $exporter->export('php://output', $rowGenerator);
-}, 'users.csv');
+        $exporter->export('php://output', $rowGenerator);
+    }, 'users.csv');
 ```
 
 ##### CakePHP
@@ -124,6 +124,7 @@ return response()
 $stream = new CallbackStream(function () use ($exporter, $rowGenerator) {
     $exporter->export('php://output', $rowGenerator);
 });
+
 return $response->withBody($stream);
 ```
 
