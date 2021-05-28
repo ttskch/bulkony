@@ -9,6 +9,7 @@ use League\Csv\Reader;
 use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Preview;
 use Ttskch\Bulkony\Import\Preview\Row;
+use Ttskch\Bulkony\Import\Reader\NonUniqueHeaderTolerantReader;
 use Ttskch\Bulkony\Import\RowVisitor\Context;
 use Ttskch\Bulkony\Import\RowVisitor\PreviewableRowVisitorInterface;
 use Ttskch\Bulkony\Import\RowVisitor\RowVisitorInterface;
@@ -20,12 +21,18 @@ use Ttskch\Bulkony\Import\Validation\ErrorListCollection;
 class Importer
 {
     /**
+     * @var bool
+     */
+    private $withNonUniqueHeader;
+
+    /**
      * @var ErrorListCollection
      */
     private $errorListCollection;
 
-    public function __construct()
+    public function __construct(bool $withNonUniqueHeader = false)
     {
+        $this->withNonUniqueHeader = $withNonUniqueHeader;
         $this->errorListCollection = new ErrorListCollection();
     }
 
@@ -95,7 +102,8 @@ class Importer
     private function getCsvReader(string $csvFilePath): Reader
     {
         /** @see AbstractCsv::$is_input_bom_included is false by default, so BOM will be skipped automatically */
-        $csv = Reader::createFromPath($csvFilePath);
+
+        $csv = $this->withNonUniqueHeader ? NonUniqueHeaderTolerantReader::createFromPath($csvFilePath) : Reader::createFromPath($csvFilePath);
         $csv->setHeaderOffset(0);
 
         return $csv;
