@@ -33,6 +33,18 @@ class Exporter
         fclose($fp);
     }
 
+    public function exportAndOutput(string $outputFileName, RowGeneratorInterface $rowGenerator): void
+    {
+        $csv = Writer::createFromPath('php://temp');
+        $csv->setOutputBOM("\xef\xbb\xbf"); // add BOM for Excel
+
+        $csv->insertAll($rowGenerator->getHeadingRows());
+        foreach ($rowGenerator->getBodyRowsIterator() as $rows) {
+            $csv->insertAll($rows);
+        }
+
+        $csv->output($outputFileName);
+    }
 
     private function rowToString(array $row): string
     {
