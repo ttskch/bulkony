@@ -125,7 +125,10 @@ $stream = new CallbackStream(function () use ($exporter, $rowGenerator) {
     $exporter->export('php://output', $rowGenerator);
 });
 
-return $response->withBody($stream);
+return $response
+    ->withType('csv')
+    ->withDownload('users.csv')
+    ->withBody($stream);
 ```
 
 ### Import
