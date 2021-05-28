@@ -4,7 +4,7 @@
 [![Packagist Version](https://img.shields.io/packagist/v/ttskch/bulkony?style=flat-square)](https://packagist.org/packages/ttskch/bulkony)
 [![Packagist Downloads](https://img.shields.io/packagist/dm/ttskch/bulkony?style=flat-square)](https://packagist.org/packages/ttskch/bulkony)
 
-Easy and flexible CSV exports and imports in PHP.
+Easy and flexible CSV exports and imports in PHP ⚡
 
 ```php
 use Ttskch\Bulkony\Import\Importer;
@@ -249,7 +249,7 @@ class UserRowVisitor implements ValidatableRowVisitorInterface
 
 In this example, you may find that `$this->hydrate($csvRow)` is called twice in `validate()` and `import()`. Sometimes this is not good.
 
-If cost of hydrating object from csv row is very high, you can pass the hydrated object through `Context` like below 👍
+If cost of hydrating object from csv row is very high, you can pass the hydrated object through `Context` like below.
 
 ```php
 public function import(array $csvRow, int $csvLineNumber, Context $context): void
@@ -267,7 +267,7 @@ public function validate(array $csvRow, ErrorList $errorList, Context $context):
     // pass hydrated $user
     $context['user'] = $user;    
     
-    // validate $user
+    // validate $user ...
 }
 ```
 
@@ -318,4 +318,4 @@ class UserRowVisitor implements RowVisitorInterface
 
 Of course you can implement previewing feature with validation.
 
-In this example, if `App\UserRowVisitor` implements `ValidatableRowVisitorInterface`, `$preview` holds whole validation errors automatically 👍 
+In this example, if `App\UserRowVisitor` implements `ValidatableRowVisitorInterface`, `$preview` holds whole validation errors automatically. 
