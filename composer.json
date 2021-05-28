@@ -10,18 +10,18 @@
     ],
     "require": {
         "php": "^7.2 || ^8.0",
-        "league/csv": "^9.6",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "league/csv": "^9.6"
     },
     "require-dev": {
         "ext-json": "*",
+        "doctrine/coding-standard": "^8.1",
+        "phpmd/phpmd": "^2.9",
+        "phpmetrics/phpmetrics": "^2.7",
+        "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^8.5",
         "squizlabs/php_codesniffer": "^3.5",
-        "phpmd/phpmd": "^2.9",
-        "phpstan/phpstan": "^0.12",
-        "vimeo/psalm": "^4.1",
-        "phpmetrics/phpmetrics": "^2.7",
-        "doctrine/coding-standard": "^8.1"
+        "vimeo/psalm": "^4.1"
     },
     "autoload": {
         "psr-4": {
@@ -81,5 +81,8 @@
         "sa": "Run static analysis",
         "metrics": "Build metrics report",
         "build": "Build project"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
