@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ttskch\Bulkony\Export;
 
 use League\Csv\Writer;
+use Ttskch\Bulkony\Exception\RuntimeException;
 use Ttskch\Bulkony\Export\RowGenerator\RowGeneratorInterface;
 
 class Exporter
@@ -12,6 +13,10 @@ class Exporter
     public function export(string $csvFilePath, RowGeneratorInterface $rowGenerator): void
     {
         $fp = fopen($csvFilePath, 'w+');
+
+        if (!$fp) {
+            throw new RuntimeException();
+        }
 
         fwrite($fp, "\xef\xbb\xbf"); // add BOM for Excel
 
@@ -31,7 +36,7 @@ class Exporter
 
     private function rowToString(array $row): string
     {
-        $csv = Writer::createFromString('');
+        $csv = Writer::createFromPath('php://temp');
         $csv->insertOne($row);
 
         return $csv->getContent();
