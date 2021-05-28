@@ -19,6 +19,26 @@ if ($importer->getErrorListCollection()->isEmpty()) {
 }
 ```
 
+## TOC
+
+<details>
+
+* [Features](#features)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Export](#export)
+        * [Export to file](#export-to-file)
+        * [Send HTTP response in WAF way](#send-http-response-in-waf-way)
+            * [Symfony](#symfony)
+            * [Laravel](#laravel)
+            * [CakePHP](#cakephp)
+    * [Import](#import)
+        * [With validation](#with-validation)
+        * [With previewing feature](#with-previewing-feature)
+
+</details>
+
 ## Features
 
 * Multibyte support
