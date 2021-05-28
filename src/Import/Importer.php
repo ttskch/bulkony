@@ -21,19 +21,20 @@ use Ttskch\Bulkony\Import\Validation\ErrorListCollection;
 class Importer
 {
     /**
-     * @var bool
-     */
-    private $withNonUniqueHeader;
-
-    /**
      * @var ErrorListCollection
      */
     private $errorListCollection;
 
-    public function __construct(bool $withNonUniqueHeader = false)
+    public function __construct()
     {
-        $this->withNonUniqueHeader = $withNonUniqueHeader;
         $this->errorListCollection = new ErrorListCollection();
+    }
+
+    public function setEncoding(string $encoding): self
+    {
+        $this->encoding = $encoding;
+
+        return $this;
     }
 
     public function getErrorListCollection(): ErrorListCollection
@@ -41,9 +42,10 @@ class Importer
         return $this->errorListCollection;
     }
 
-    public function import(string $csvFilePath, RowVisitorInterface $rowVisitor): void
+    public function import(string $csvFilePath, RowVisitorInterface $rowVisitor, string $encoding = 'UTF-8', int $headerOffset = 0, bool $nonUniqueHeader = false): void
     {
-        $csvRows = $this->getCsvReader($csvFilePath)->getRecords();
+        $csvReader = $this->getCsvReader($csvFilePath, $encoding, $headerOffset, $nonUniqueHeader);
+        $csvRows = $csvReader->getRecords();
 
         $context = new Context();
 
@@ -67,9 +69,9 @@ class Importer
         }
     }
 
-    public function preview(string $csvFilePath, PreviewableRowVisitorInterface $rowVisitor): Preview
+    public function preview(string $csvFilePath, PreviewableRowVisitorInterface $rowVisitor, string $encoding = 'UTF-8', int $headerOffset = 0, bool $nonUniqueHeader = false): Preview
     {
-        $csvReader = $this->getCsvReader($csvFilePath);
+        $csvReader = $this->getCsvReader($csvFilePath, $encoding, $headerOffset, $nonUniqueHeader);
         $csvRows = $csvReader->getRecords();
 
         $context = new Context();
@@ -99,12 +101,18 @@ class Importer
         return new Preview($previewRows, $csvReader->count());
     }
 
-    private function getCsvReader(string $csvFilePath): Reader
+    private function getCsvReader(string $csvFilePath, string $encoding, int $headerOffset, bool $nonUniqueHeader): Reader
     {
+        if ($encoding !== 'UTF-8') {
+            $content = file_get_contents($csvFilePath);
+            $content = mb_convert_encoding($content, 'UTF-8', 'auto');
+            file_put_contents($csvFilePath, $content);
+        }
+
         /** @see AbstractCsv::$is_input_bom_included is false by default, so BOM will be skipped automatically */
 
-        $csv = $this->withNonUniqueHeader ? NonUniqueHeaderTolerantReader::createFromPath($csvFilePath) : Reader::createFromPath($csvFilePath);
-        $csv->setHeaderOffset(0);
+        $csv = $nonUniqueHeader ? NonUniqueHeaderTolerantReader::createFromPath($csvFilePath) : Reader::createFromPath($csvFilePath);
+        $csv->setHeaderOffset($headerOffset);
 
         return $csv;
     }
