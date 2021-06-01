@@ -68,7 +68,7 @@ use Ttskch\Bulkony\Export\Exporter;
 $exporter = new Exporter();
 $rowGenerator = new App\UserRowGenerator();
 
-$exporter->exportAndOutput('users.csv', $rowGenerator); // send HTTP response for downloadind
+$exporter->exportAndOutput('users.csv', $rowGenerator); // send HTTP response for downloading
 ```
 
 ```php
