@@ -105,7 +105,7 @@ class Importer
     {
         if ($encoding !== 'UTF-8') {
             $content = file_get_contents($csvFilePath);
-            $content = mb_convert_encoding($content, 'UTF-8', 'auto');
+            $content = mb_convert_encoding($content, 'UTF-8', $encoding);
             file_put_contents($csvFilePath, $content);
         }
 
