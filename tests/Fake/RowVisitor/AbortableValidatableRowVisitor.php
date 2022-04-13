@@ -10,7 +10,7 @@ use Ttskch\Bulkony\Import\Validation\ErrorList;
 
 class AbortableValidatableRowVisitor extends ValidatableRowVisitor
 {
-    public function onError(array $csvRow, ErrorList $errorList, Context $context): bool
+    public function onError(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): bool
     {
         echo sprintf("[onError] csv line %d: %s\n", $errorList->getCsvLineNumber(), json_encode($csvRow, JSON_UNESCAPED_UNICODE));
 

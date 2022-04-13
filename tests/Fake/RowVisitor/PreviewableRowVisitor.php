@@ -10,7 +10,7 @@ use Ttskch\Bulkony\Import\RowVisitor\PreviewableRowVisitorInterface;
 
 class PreviewableRowVisitor extends RowVisitor implements PreviewableRowVisitorInterface
 {
-    public function preview(array $csvRow, Row $previewRow, Context $context): void
+    public function preview(array $csvRow, int $csvLineNumber, Row $previewRow, Context $context): void
     {
         $previewRow->get('name')->setChanged();
         $previewRow->get('email')->setChanged();
