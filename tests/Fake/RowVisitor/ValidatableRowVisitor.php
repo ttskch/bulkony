@@ -10,7 +10,7 @@ use Ttskch\Bulkony\Import\Validation\ErrorList;
 
 class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorInterface
 {
-    public function validate(array $csvRow, ErrorList $errorList, Context $context): void
+    public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void
     {
         if ($csvRow['name'] === 'bob') {
             $errorList->get('email', true)->addMessage('Invalid email address');
@@ -21,7 +21,7 @@ class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorI
         echo sprintf("[validate] csv line %d: %s\n", $errorList->getCsvLineNumber(), json_encode($csvRow, JSON_UNESCAPED_UNICODE));
     }
 
-    public function onError(array $csvRow, ErrorList $errorList, Context $context): bool
+    public function onError(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): bool
     {
         echo sprintf("[onError] csv line %d: %s\n", $errorList->getCsvLineNumber(), json_encode($csvRow, JSON_UNESCAPED_UNICODE));
 

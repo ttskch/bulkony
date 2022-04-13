@@ -52,10 +52,10 @@ class Importer
         foreach ($csvRows as $i => $csvRow) {
             if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
                 $errorList = new ErrorList($i + 1);
-                $rowVisitor->validate($csvRow, $errorList, $context);
+                $rowVisitor->validate($csvRow, $i + 1, $errorList, $context);
 
                 if (!$errorList->isEmpty()) {
-                    $continue = $rowVisitor->onError($csvRow, $errorList, $context);
+                    $continue = $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
                     $this->errorListCollection->upsert($errorList);
                     if (!$continue) {
                         break;
@@ -85,14 +85,14 @@ class Importer
 
                 if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
                     $errorList = new ErrorList($i + 1);
-                    $rowVisitor->validate($csvRow, $errorList, $context);
+                    $rowVisitor->validate($csvRow, $i + 1, $errorList, $context);
                     /** @var Error $error */
                     foreach ($errorList as $error) {
                         $previewRow->get($error->getCsvHeading(), true)->setError($error);
                     }
                 }
 
-                $rowVisitor->preview($csvRow, $previewRow, $context);
+                $rowVisitor->preview($csvRow, $i + 1, $previewRow, $context);
 
                 yield $previewRow;
             }

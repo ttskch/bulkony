@@ -8,5 +8,5 @@ use Ttskch\Bulkony\Import\Preview\Row;
 
 interface PreviewableRowVisitorInterface extends RowVisitorInterface
 {
-    public function preview(array $csvRow, Row $previewRow, Context $context): void;
+    public function preview(array $csvRow, int $csvLineNumber, Row $previewRow, Context $context): void;
 }
