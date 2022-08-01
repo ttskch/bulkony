@@ -9,14 +9,14 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "ext-mbstring": "*",
-        "league/csv": "^9.6"
+        "league/csv": "^9.8"
     },
     "require-dev": {
         "ext-json": "*",
-        "phpstan/phpstan": "^0.12",
-        "phpunit/phpunit": "^8.5",
+        "phpstan/phpstan": "^1.8",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
