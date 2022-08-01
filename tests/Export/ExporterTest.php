@@ -9,7 +9,7 @@ use Ttskch\Bulkony\Fake\RowGenerator\RowGenerator;
 
 class ExporterTest extends TestCase
 {
-    public function testExport()
+    public function testExport(): void
     {
         $exporter = new Exporter();
         $rowGenerator = new RowGenerator();
@@ -17,9 +17,10 @@ class ExporterTest extends TestCase
 
         $exporter->export($csvFilePath, $rowGenerator);
 
+        /** @var string $actualContent */
         $actualContent = file_get_contents($csvFilePath);
 
-        $this->assertRegExp("/^\xef\xbb\xbf/", $actualContent); // with BOM
+        $this->assertMatchesRegularExpression("/^\xef\xbb\xbf/", $actualContent); // with BOM
 
         $actualContent = trim(ltrim($actualContent, "\xef\xbb\xbf"));
 

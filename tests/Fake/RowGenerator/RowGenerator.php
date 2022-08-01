@@ -23,13 +23,13 @@ class RowGenerator implements RowGeneratorInterface
     {
         return [
             [
-                [1, 'alice', 'alice@example.com'],
+                ['1', 'alice', 'alice@example.com'],
             ],
             [
-                [2, 'bob', 'bob@example.com'],
+                ['2', 'bob', 'bob@example.com'],
             ],
             [
-                [3, 'charlie', 'charlie@example.com'],
+                ['3', 'charlie', 'charlie@example.com'],
             ],
         ];
     }

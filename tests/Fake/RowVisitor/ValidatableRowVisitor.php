@@ -6,6 +6,7 @@ namespace Ttskch\Bulkony\Fake\RowVisitor;
 
 use Ttskch\Bulkony\Import\RowVisitor\Context;
 use Ttskch\Bulkony\Import\RowVisitor\ValidatableRowVisitorInterface;
+use Ttskch\Bulkony\Import\Validation\Error;
 use Ttskch\Bulkony\Import\Validation\ErrorList;
 
 class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorInterface
@@ -13,7 +14,9 @@ class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorI
     public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void
     {
         if ('bob' === $csvRow['name']) {
-            $errorList->get('email', true)->addMessage('Invalid email address');
+            /** @var Error $error */
+            $error = $errorList->get('email', true);
+            $error->addMessage('Invalid email address');
         }
 
         $context['from_validate_to_preview_and_import'] = 'context';

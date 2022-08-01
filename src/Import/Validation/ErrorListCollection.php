@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Ttskch\Bulkony\Import\Validation;
 
+/**
+ * @implements \IteratorAggregate<ErrorList>
+ */
 class ErrorListCollection implements \IteratorAggregate
 {
     /**
-     * @var array|ErrorList[]
+     * @var array<ErrorList>
      */
     private $errorLists = [];
 
@@ -45,9 +48,11 @@ class ErrorListCollection implements \IteratorAggregate
     }
 
     /**
-     * @see \IteratorAggregate
+     * @see \IteratorAggregate::getIterator()
+     *
+     * @return \Traversable<ErrorList>
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->errorLists);
     }

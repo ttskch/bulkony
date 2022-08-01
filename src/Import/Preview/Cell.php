@@ -28,6 +28,9 @@ class Cell
      */
     private $error;
 
+    /**
+     * @param mixed|null $value
+     */
     public function __construct(string $csvHeading, $value = null)
     {
         $this->csvHeading = $csvHeading;
@@ -39,11 +42,17 @@ class Cell
         return $this->csvHeading;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * @param mixed|null $value
+     */
     public function setValue($value): self
     {
         $this->value = $value;

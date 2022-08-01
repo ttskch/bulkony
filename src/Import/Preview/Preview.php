@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ttskch\Bulkony\Import\Preview;
 
+/**
+ * @extends \IteratorIterator<mixed, Row, \Iterator>
+ */
 class Preview extends \IteratorIterator
 {
     /**

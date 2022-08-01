@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ttskch\Bulkony\Fake\RowVisitor;
 
+use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Row;
 use Ttskch\Bulkony\Import\RowVisitor\Context;
 use Ttskch\Bulkony\Import\RowVisitor\PreviewableRowVisitorInterface;
@@ -12,7 +13,12 @@ class ValidatablePreviewableRowVisitor extends ValidatableRowVisitor implements 
 {
     public function preview(array $csvRow, int $csvLineNumber, Row $previewRow, Context $context): void
     {
-        $previewRow->get('name')->setChanged();
-        $previewRow->get('email')->setChanged();
+        /** @var Cell $cell */
+        $cell = $previewRow->get('name');
+        $cell->setChanged();
+
+        /** @var Cell $cell */
+        $cell = $previewRow->get('email');
+        $cell->setChanged();
     }
 }

@@ -10,12 +10,13 @@ use Ttskch\Bulkony\Fake\RowVisitor\PreviewableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\RowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\ValidatablePreviewableRowVisitor;
 use Ttskch\Bulkony\Fake\RowVisitor\ValidatableRowVisitor;
+use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Row;
 
 class ImporterTest extends TestCase
 {
-    private $importer;
-    private $csvFilePath;
+    private Importer $importer;
+    private string $csvFilePath;
 
     public function setUp(): void
     {
@@ -31,14 +32,14 @@ EOS;
         file_put_contents($this->csvFilePath, $content);
     }
 
-    public function testWithRowVisitor()
+    public function testWithRowVisitor(): void
     {
         // simple row visitor
         $rowVisitor = new RowVisitor();
 
         ob_start();
         $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
+        $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS
 [import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with ''
 [import] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"} with ''
@@ -47,14 +48,14 @@ EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
 
-    public function testWithValidatableRowVisitor()
+    public function testWithValidatableRowVisitor(): void
     {
         // validatable row visitor
         $rowVisitor = new ValidatableRowVisitor();
 
         ob_start();
         $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
+        $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
 [import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
@@ -66,14 +67,14 @@ EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
 
-    public function testWithAbortableValidatableRowVisitor()
+    public function testWithAbortableValidatableRowVisitor(): void
     {
         // validatable row visitor
         $rowVisitor = new AbortableValidatableRowVisitor();
 
         ob_start();
         $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
+        $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
 [import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
@@ -83,7 +84,7 @@ EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
 
-    public function testWithPreviewableRowVisitor()
+    public function testWithPreviewableRowVisitor(): void
     {
         // previewable row visitor
         $rowVisitor = new PreviewableRowVisitor();
@@ -94,8 +95,16 @@ EOS;
         /** @var Row $row */
         foreach ($preview as $row) {
             foreach (['id', 'name', 'email'] as $csvHeading) {
+                /** @var Cell $cell */
                 $cell = $row->get($csvHeading);
-                $previewContent .= sprintf("%d %s: %s %s (%d errors)\n", $row->getCsvLineNumber(), $cell->getCsvHeading(), $cell->getValue(), $cell->isChanged() ? 'changed' : 'not-changed', $cell->getError() ? count($cell->getError()->getMessages()) : 0);
+                $previewContent .= sprintf(
+                    "%d %s: %s %s (%d errors)\n",
+                    $row->getCsvLineNumber(),
+                    $cell->getCsvHeading(),
+                    strval($cell->getValue()),
+                    $cell->isChanged() ? 'changed' : 'not-changed',
+                    $cell->getError() ? count($cell->getError()->getMessages()) : 0,
+                );
             }
         }
         $previewContent = trim($previewContent);
@@ -116,7 +125,7 @@ EOS1;
 
         ob_start();
         $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
+        $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS2
 [import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with ''
 [import] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"} with ''
@@ -125,7 +134,7 @@ EOS2;
         $this->assertEquals($expectedEchoed, $echoed);
     }
 
-    public function testWithValidatablePreviewableRowVisitor()
+    public function testWithValidatablePreviewableRowVisitor(): void
     {
         // validatable and previewable row visitor
         $rowVisitor = new ValidatablePreviewableRowVisitor();
@@ -138,13 +147,21 @@ EOS2;
         /** @var Row $row */
         foreach ($preview as $row) {
             foreach (['id', 'name', 'email'] as $csvHeading) {
+                /** @var Cell $cell */
                 $cell = $row->get($csvHeading);
-                $previewContent .= sprintf("%d %s: %s %s (%d errors)\n", $row->getCsvLineNumber(), $cell->getCsvHeading(), $cell->getValue(), $cell->isChanged() ? 'changed' : 'not-changed', $cell->getError() ? count($cell->getError()->getMessages()) : 0);
+                $previewContent .= sprintf(
+                    "%d %s: %s %s (%d errors)\n",
+                    $row->getCsvLineNumber(),
+                    $cell->getCsvHeading(),
+                    strval($cell->getValue()),
+                    $cell->isChanged() ? 'changed' : 'not-changed',
+                    $cell->getError() ? count($cell->getError()->getMessages()) : 0,
+                );
             }
         }
         $previewContent = trim($previewContent);
 
-        $echoed = trim(ob_get_clean());
+        $echoed = trim(strval(ob_get_clean()));
 
         $expectedEchoed = <<<EOS1
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
@@ -170,7 +187,7 @@ EOS2;
 
         ob_start();
         $this->importer->import($this->csvFilePath, $rowVisitor);
-        $echoed = trim(ob_get_clean());
+        $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS3
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
 [import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'

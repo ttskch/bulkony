@@ -6,6 +6,7 @@ namespace Ttskch\Bulkony\Import;
 
 use League\Csv\AbstractCsv;
 use League\Csv\Reader;
+use Ttskch\Bulkony\Exception\RuntimeException;
 use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Preview;
 use Ttskch\Bulkony\Import\Preview\Row;
@@ -20,21 +21,11 @@ use Ttskch\Bulkony\Import\Validation\ErrorListCollection;
 
 class Importer
 {
-    /**
-     * @var ErrorListCollection
-     */
-    private $errorListCollection;
+    private ErrorListCollection $errorListCollection;
 
     public function __construct()
     {
         $this->errorListCollection = new ErrorListCollection();
-    }
-
-    public function setEncoding(string $encoding): self
-    {
-        $this->encoding = $encoding;
-
-        return $this;
     }
 
     public function getErrorListCollection(): ErrorListCollection
@@ -45,6 +36,7 @@ class Importer
     public function import(string $csvFilePath, RowVisitorInterface $rowVisitor, string $encoding = 'UTF-8', int $headerOffset = 0, bool $nonUniqueHeader = false): void
     {
         $csvReader = $this->getCsvReader($csvFilePath, $encoding, $headerOffset, $nonUniqueHeader);
+        /** @var \Iterator<array<string>> $csvRows */
         $csvRows = $csvReader->getRecords();
 
         $context = new Context();
@@ -72,10 +64,12 @@ class Importer
     public function preview(string $csvFilePath, PreviewableRowVisitorInterface $rowVisitor, string $encoding = 'UTF-8', int $headerOffset = 0, bool $nonUniqueHeader = false): Preview
     {
         $csvReader = $this->getCsvReader($csvFilePath, $encoding, $headerOffset, $nonUniqueHeader);
+        /** @var \Iterator<array<string>> $csvRows */
         $csvRows = $csvReader->getRecords();
 
         $context = new Context();
 
+        /** @var \Generator $previewRows */
         $previewRows = call_user_func(function () use ($csvRows, $rowVisitor, $context) {
             foreach ($csvRows as $i => $csvRow) {
                 $previewRow = new Row($i + 1);
@@ -88,7 +82,9 @@ class Importer
                     $rowVisitor->validate($csvRow, $i + 1, $errorList, $context);
                     /** @var Error $error */
                     foreach ($errorList as $error) {
-                        $previewRow->get($error->getCsvHeading(), true)->setError($error);
+                        /** @var Cell $cell */
+                        $cell = $previewRow->get($error->getCsvHeading(), true);
+                        $cell->setError($error);
                     }
                 }
 
@@ -105,6 +101,11 @@ class Importer
     {
         if ('UTF-8' !== $encoding) {
             $content = file_get_contents($csvFilePath);
+
+            if (false === $content) {
+                throw new RuntimeException();
+            }
+
             $content = mb_convert_encoding($content, 'UTF-8', $encoding);
             file_put_contents($csvFilePath, $content);
         }

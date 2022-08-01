@@ -46,11 +46,14 @@ class Exporter
         $csv->output($outputFileName);
     }
 
+    /**
+     * @param array<string> $row
+     */
     private function rowToString(array $row): string
     {
         $csv = Writer::createFromPath('php://temp');
         $csv->insertOne($row);
 
-        return $csv->getContent();
+        return $csv->toString();
     }
 }

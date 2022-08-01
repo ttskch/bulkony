@@ -12,10 +12,13 @@ class Error
     private $csvHeading;
 
     /**
-     * @var array|string[]
+     * @var array<string>
      */
     private $messages;
 
+    /**
+     * @param array<string> $messages
+     */
     public function __construct(string $csvHeading, array $messages = [])
     {
         $this->csvHeading = $csvHeading;
@@ -28,7 +31,7 @@ class Error
     }
 
     /**
-     * @return array|string[]
+     * @return array<string>
      */
     public function getMessages(): array
     {

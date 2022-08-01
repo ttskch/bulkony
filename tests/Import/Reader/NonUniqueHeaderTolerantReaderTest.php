@@ -10,8 +10,10 @@ class NonUniqueHeaderTolerantReaderTest extends TestCase
 {
     /**
      * @dataProvider getHeaderDataProvider
+     *
+     * @param array<mixed> $expectedHeader
      */
-    public function testGetHeader(string $csv, array $expectedHeader)
+    public function testGetHeader(string $csv, array $expectedHeader): void
     {
         $reader = NonUniqueHeaderTolerantReader::createFromString($csv);
         $reader->setHeaderOffset(0);
@@ -19,7 +21,10 @@ class NonUniqueHeaderTolerantReaderTest extends TestCase
         $this->assertEquals($expectedHeader, $reader->getHeader());
     }
 
-    public function getHeaderDataProvider()
+    /**
+     * @return array<mixed>
+     */
+    public function getHeaderDataProvider(): array
     {
         return [
             [

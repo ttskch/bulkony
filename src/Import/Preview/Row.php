@@ -6,6 +6,9 @@ namespace Ttskch\Bulkony\Import\Preview;
 
 use Ttskch\Bulkony\Exception\OutOfBoundsException;
 
+/**
+ * @implements \IteratorAggregate<Cell>
+ */
 class Row implements \IteratorAggregate
 {
     /**
@@ -14,7 +17,7 @@ class Row implements \IteratorAggregate
     private $csvLineNumber;
 
     /**
-     * @var array|Cell[]
+     * @var array<Cell>
      */
     private $cells = [];
 
@@ -90,9 +93,11 @@ class Row implements \IteratorAggregate
     }
 
     /**
-     * @see \IteratorAggregate
+     * @see \IteratorAggregate::getIterator()
+     *
+     * @return \Traversable<Cell>
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->cells);
     }

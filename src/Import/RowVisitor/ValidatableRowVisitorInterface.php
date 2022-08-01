@@ -11,10 +11,13 @@ interface ValidatableRowVisitorInterface extends RowVisitorInterface
     public const CONTINUE_ON_ERROR = true;
     public const ABORT_ON_ERROR = false;
 
+    /**
+     * @param array<string> $csvRow
+     */
     public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void;
 
     /**
-     * @return bool self::CONTINUE_ON_ERROR or self::ABORT_ON_ERROR
+     * @param array<string> $csvRow
      */
     public function onError(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): bool;
 }

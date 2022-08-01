@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ttskch\Bulkony\Import\Validation;
 
+/**
+ * @implements \IteratorAggregate<Error>
+ */
 class ErrorList implements \IteratorAggregate
 {
     /**
@@ -12,7 +15,7 @@ class ErrorList implements \IteratorAggregate
     private $csvLineNumber;
 
     /**
-     * @var array|Error[]
+     * @var array<Error>
      */
     private $errors = [];
 
@@ -60,9 +63,11 @@ class ErrorList implements \IteratorAggregate
     }
 
     /**
-     * @see \IteratorAggregate
+     * @see \IteratorAggregate::getIterator()
+     *
+     * @return \Traversable<Error>
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->errors);
     }
