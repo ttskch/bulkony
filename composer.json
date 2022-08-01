@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "ext-json": "*",
+        "friendsofphp/php-cs-fixer": "^3.9",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.5"
     },
@@ -32,11 +33,13 @@
         }
     },
     "scripts": {
-        "test": [
-            "vendor/bin/phpunit"
-        ],
+        "cs": "./vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --dry-run --diff -v src tests",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php src tests",
         "sa": "@php -d memory_limit=-1 ./vendor/bin/phpstan analyse -c phpstan.neon",
         "sa-clear": "@php -d memory_limit=-1 ./vendor/bin/phpstan clear-result-cache",
+        "test": "@php -d memory_limit=-1 ./vendor/bin/phpunit",
+        "tests": ["@cs", "@sa", "@test"],
+        "coverage": "@php -d memory_limit=-1 -d zend_extension=xdebug.so -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
     },
     "config": {
         "sort-packages": true
