@@ -49,7 +49,7 @@ if ($importer->getErrorListCollection()->isEmpty()) {
 
 ## Requirements
 
-* PHP >= 7.2
+* PHP >= 7.4
 * ext-mbstring
 
 ## Installation
