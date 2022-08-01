@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ttskch\Bulkony\Fake\RowVisitor;
+namespace Ttskch\Bulkony\Tests\Fake\RowVisitor;
 
 use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Row;

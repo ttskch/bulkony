@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Ttskch\Bulkony\Import\Reader;
+namespace Ttskch\Bulkony\Tests\Import\Reader;
 
 use PHPUnit\Framework\TestCase;
+use Ttskch\Bulkony\Import\Reader\NonUniqueHeaderTolerantReader;
 
 class NonUniqueHeaderTolerantReaderTest extends TestCase
 {

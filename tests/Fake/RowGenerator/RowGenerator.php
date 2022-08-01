@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ttskch\Bulkony\Fake\RowGenerator;
+namespace Ttskch\Bulkony\Tests\Fake\RowGenerator;
 
 use Ttskch\Bulkony\Export\RowGenerator\RowGeneratorInterface;
 

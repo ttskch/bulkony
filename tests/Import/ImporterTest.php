@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Ttskch\Bulkony\Import;
+namespace Ttskch\Bulkony\Tests\Import;
 
 use PHPUnit\Framework\TestCase;
-use Ttskch\Bulkony\Fake\RowVisitor\AbortableValidatableRowVisitor;
-use Ttskch\Bulkony\Fake\RowVisitor\PreviewableRowVisitor;
-use Ttskch\Bulkony\Fake\RowVisitor\RowVisitor;
-use Ttskch\Bulkony\Fake\RowVisitor\ValidatablePreviewableRowVisitor;
-use Ttskch\Bulkony\Fake\RowVisitor\ValidatableRowVisitor;
+use Ttskch\Bulkony\Import\Importer;
 use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Row;
+use Ttskch\Bulkony\Tests\Fake\RowVisitor\AbortableValidatableRowVisitor;
+use Ttskch\Bulkony\Tests\Fake\RowVisitor\PreviewableRowVisitor;
+use Ttskch\Bulkony\Tests\Fake\RowVisitor\RowVisitor;
+use Ttskch\Bulkony\Tests\Fake\RowVisitor\ValidatablePreviewableRowVisitor;
+use Ttskch\Bulkony\Tests\Fake\RowVisitor\ValidatableRowVisitor;
 
 class ImporterTest extends TestCase
 {

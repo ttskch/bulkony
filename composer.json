@@ -26,10 +26,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ttskch\\Bulkony\\": [
-                "tests/",
-                "tests/Fake"
-            ]
+            "Ttskch\\Bulkony\\Tests\\": "tests/"
         }
     },
     "scripts": {

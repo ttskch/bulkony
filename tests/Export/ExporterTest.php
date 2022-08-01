@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Ttskch\Bulkony\Export;
+namespace Ttskch\Bulkony\Tests\Export;
 
 use PHPUnit\Framework\TestCase;
-use Ttskch\Bulkony\Fake\RowGenerator\RowGenerator;
+use Ttskch\Bulkony\Export\Exporter;
+use Ttskch\Bulkony\Tests\Fake\RowGenerator\RowGenerator;
 
 class ExporterTest extends TestCase
 {
