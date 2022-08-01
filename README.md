@@ -1,6 +1,6 @@
 # bulkony
 
-[![Travis (.com)](https://img.shields.io/travis/com/ttskch/bulkony.svg?style=flat-square)](https://travis-ci.com/ttskch/bulkony)
+[![](https://github.com/ttskch/bulkony/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/ttskch/bulkony/actions/workflows/ci.yaml?query=branch:main)
 [![Packagist Version](https://img.shields.io/packagist/v/ttskch/bulkony?style=flat-square)](https://packagist.org/packages/ttskch/bulkony)
 [![Packagist Downloads](https://img.shields.io/packagist/dm/ttskch/bulkony?style=flat-square)](https://packagist.org/packages/ttskch/bulkony)
 
