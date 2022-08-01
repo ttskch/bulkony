@@ -1,6 +1,8 @@
 {
     "name": "ttskch/bulkony",
-    "description": "",
+    "description": "Easy and flexible CSV exports and imports in PHP ⚡",
+    "keywords": ["csv", "excel", "bulk", "csv-export", "csv-import"],
+    "type": "library",
     "license": "MIT",
     "authors": [
         {

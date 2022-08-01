@@ -78,16 +78,14 @@ use Ttskch\Bulkony\Export\RowGenerator\RowGeneratorInterface;
 
 class UserRowGenerator implements RowGeneratorInterface
 {
-    private $userRepository;
-    
-    public function __construct($userRepository)
+    public function __construct(private $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function getHeadingRows(): array
     {
-        return ['id', 'name', 'email'];
+        // return 2D array so that you can export multiple header rows
+        return [['id', 'name', 'email']];
     }
 
     public function getBodyRowsIterator(): iterable
@@ -170,11 +168,8 @@ use Ttskch\Bulkony\Import\RowVisitor\RowVisitorInterface;
 
 class UserRowVisitor implements RowVisitorInterface
 {
-    private $userRepository;
-    
-    public function __constructor($userRepository)
+    public function __constructor(private $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function import(array $csvRow, int $csvLineNumber, Context $context): void
@@ -184,7 +179,7 @@ class UserRowVisitor implements RowVisitorInterface
     
     private function hydrate(array $csvRow): App\User
     {
-        // create App\User instance from csv row
+        // create App\User instance from csv row in some way
         return new App\User($csvRow);
     }
 }
@@ -227,13 +222,8 @@ use Ttskch\Bulkony\Import\Validation\ErrorList;
 
 class UserRowVisitor implements ValidatableRowVisitorInterface
 {
-    private $userRepository;
-    private $validator;
-    
-    public function __constructor($userRepository, $validator)
+    public function __constructor(private $userRepository, private $validator)
     {
-        $this->userRepository = $userRepository;
-        $this->validator = $validator;
     }
 
     public function import(array $csvRow, int $csvLineNumber, Context $context): void
@@ -256,7 +246,7 @@ class UserRowVisitor implements ValidatableRowVisitorInterface
 
     public function onError(array $csvRow, ErrorList $errorList, Context $context): bool
     {
-        // you can log errors for one csv row or something here...
+        // you can log errors for one csv row or do something here...
         
         // you can choose continue or abort on error occurred
         return ValidatableRowVisitorInterface::CONTINUE_ON_ERROR;
@@ -265,7 +255,7 @@ class UserRowVisitor implements ValidatableRowVisitorInterface
     
     private function hydrate(array $csvRow): App\User
     {
-        // create App\User instance from csv row
+        // create App\User instance from csv row in some way
         return new App\User($csvRow);
     }
 }
