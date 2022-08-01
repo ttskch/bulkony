@@ -15,13 +15,8 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "doctrine/coding-standard": "^8.1",
-        "phpmd/phpmd": "^2.9",
-        "phpmetrics/phpmetrics": "^2.7",
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^8.5",
-        "squizlabs/php_codesniffer": "^3.5",
-        "vimeo/psalm": "^4.1"
     },
     "autoload": {
         "psr-4": {
@@ -40,47 +35,8 @@
         "test": [
             "vendor/bin/phpunit"
         ],
-        "tests": [
-            "@cs",
-            "@sa",
-            "@test"
-        ],
-        "coverage": [
-            "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
-        ],
-        "pcov": [
-            "php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"
-        ],
-        "cs": [
-            "./vendor/bin/phpcs --standard=phpcs.xml src tests"
-        ],
-        "cs-fix": [
-            "./vendor/bin/phpcbf src tests"
-        ],
-        "sa": [
-            "phpstan analyse -c phpstan.neon",
-            "psalm --show-info=true"
-        ],
-        "metrics": [
-            "phpmetrics --report-html=build/metrics --excluded-dirs=src/Exception src"
-        ],
-        "build": [
-            "@cs",
-            "@sa",
-            "@pcov",
-            "@metrics"
-        ]
-    },
-    "scripts-descriptions": {
-        "test": "Run unit tests",
-        "tests": "Run tests and quality checks",
-        "coverage": "Generate test coverage report",
-        "pcov": "Generate test coverage report (pcov)",
-        "cs": "Check the coding style",
-        "cs-fix": "Fix the coding style",
-        "sa": "Run static analysis",
-        "metrics": "Build metrics report",
-        "build": "Build project"
+        "sa": "@php -d memory_limit=-1 ./vendor/bin/phpstan analyse -c phpstan.neon",
+        "sa-clear": "@php -d memory_limit=-1 ./vendor/bin/phpstan clear-result-cache",
     },
     "config": {
         "sort-packages": true
