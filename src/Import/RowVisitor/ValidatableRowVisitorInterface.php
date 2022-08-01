@@ -8,8 +8,8 @@ use Ttskch\Bulkony\Import\Validation\ErrorList;
 
 interface ValidatableRowVisitorInterface extends RowVisitorInterface
 {
-    const CONTINUE_ON_ERROR = true;
-    const ABORT_ON_ERROR = false;
+    public const CONTINUE_ON_ERROR = true;
+    public const ABORT_ON_ERROR = false;
 
     public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void;
 

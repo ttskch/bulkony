@@ -103,14 +103,13 @@ class Importer
 
     private function getCsvReader(string $csvFilePath, string $encoding, int $headerOffset, bool $nonUniqueHeader): Reader
     {
-        if ($encoding !== 'UTF-8') {
+        if ('UTF-8' !== $encoding) {
             $content = file_get_contents($csvFilePath);
             $content = mb_convert_encoding($content, 'UTF-8', $encoding);
             file_put_contents($csvFilePath, $content);
         }
 
         /** @see AbstractCsv::$is_input_bom_included is false by default, so BOM will be skipped automatically */
-
         $csv = $nonUniqueHeader ? NonUniqueHeaderTolerantReader::createFromPath($csvFilePath) : Reader::createFromPath($csvFilePath);
         $csv->setHeaderOffset($headerOffset);
 

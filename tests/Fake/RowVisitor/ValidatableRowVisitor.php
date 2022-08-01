@@ -12,7 +12,7 @@ class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorI
 {
     public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void
     {
-        if ($csvRow['name'] === 'bob') {
+        if ('bob' === $csvRow['name']) {
             $errorList->get('email', true)->addMessage('Invalid email address');
         }
 
