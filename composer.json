@@ -17,8 +17,7 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "friendsofphp/php-cs-fixer": "^3.9",
-        "phpstan/phpstan": "^1.8",
+        "bamarni/composer-bin-plugin": "^1.8",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
@@ -32,15 +31,30 @@
         }
     },
     "scripts": {
-        "cs": "./vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --dry-run --diff -v src tests",
-        "cs-fix": "./vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php src tests",
-        "sa": "@php -d memory_limit=-1 ./vendor/bin/phpstan analyse -c phpstan.neon",
-        "sa-clear": "@php -d memory_limit=-1 ./vendor/bin/phpstan clear-result-cache",
+        "cs": [
+            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
+            "./vendor-bin/tools/vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php --dry-run --diff -v src tests"
+        ],
+        "cs:fix": [
+            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
+            "./vendor-bin/tools/vendor/bin/php-cs-fixer fix --config .php-cs-fixer.dist.php src tests"
+        ],
+        "sa": "@php -d memory_limit=-1 ./vendor-bin/tools/vendor/bin/phpstan analyse -c phpstan.neon",
+        "sa:clear": "@php -d memory_limit=-1 ./vendor-bin/tools/vendor/bin/phpstan clear-result-cache",
         "test": "@php -d memory_limit=-1 ./vendor/bin/phpunit",
+        "test:cov": "@php -d memory_limit=-1 -d zend_extension=xdebug.so -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage --coverage-clover=build/coverage.xml",
         "tests": ["@cs", "@sa", "@test"],
-        "coverage": "@php -d memory_limit=-1 -d zend_extension=xdebug.so -d xdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+        "tests:ci": ["@cs", "@sa", "@test:cov"]
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false
+        }
     }
 }
