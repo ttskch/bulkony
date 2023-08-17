@@ -36,6 +36,7 @@ if ($importer->getErrorListCollection()->isEmpty()) {
     * [Import](#import)
         * [With validation](#with-validation)
         * [With previewing feature](#with-previewing-feature)
+* [Getting involved](#getting-involved)
 
 </details>
 
@@ -54,7 +55,7 @@ if ($importer->getErrorListCollection()->isEmpty()) {
 
 ## Installation
 
-```bash
+```shell
 $ composer require ttskch/bulkony
 ```
 
@@ -333,3 +334,14 @@ class UserRowVisitor implements RowVisitorInterface
 Of course you can implement previewing feature with validation.
 
 In this example, if `App\UserRowVisitor` implements `ValidatableRowVisitorInterface`, `$preview` holds whole validation errors automatically. 
+
+## Getting involved
+
+```shell
+$ composer install
+$ composer bin tools install
+
+# Develop...
+
+$ composer tests
+```
