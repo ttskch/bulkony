@@ -24,14 +24,16 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
+      - name: Get Composer cache directory path
+        id: composer-cache-dir-path
+        run: echo "path=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
         with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
+          path: ${{ steps.composer-cache-dir-path.outputs.path }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Dependencies
         run: |
