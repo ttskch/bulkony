@@ -97,6 +97,9 @@ class Importer
         return new Preview($previewRows, $csvReader->count());
     }
 
+    /**
+     * @return Reader<array<string>>
+     */
     private function getCsvReader(string $csvFilePath, string $encoding, int $headerOffset, bool $nonUniqueHeader): Reader
     {
         if ('UTF-8' !== $encoding) {

@@ -6,6 +6,9 @@ namespace Ttskch\Bulkony\Import\Reader;
 
 use League\Csv\Reader;
 
+/**
+ * @extends Reader<array<string>>
+ */
 class NonUniqueHeaderTolerantReader extends Reader
 {
     public function getHeader(): array
