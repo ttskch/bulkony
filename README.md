@@ -233,7 +233,7 @@ class UserRowVisitor implements ValidatableRowVisitorInterface
         $this->userRepository->persist($this->hydrate($csvRow));
     }
 
-    public function validate(array $csvRow, ErrorList $errorList, Context $context): void
+    public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void
     {
         $user = $this->hydrate($csvRow);
 
@@ -246,7 +246,7 @@ class UserRowVisitor implements ValidatableRowVisitorInterface
         }
     }
 
-    public function onError(array $csvRow, ErrorList $errorList, Context $context): bool
+    public function onError(array $csvRow, int $csvLineNumber,  ErrorList $errorList, Context $context): bool
     {
         // you can log errors for one csv row or do something here...
         
@@ -276,7 +276,7 @@ public function import(array $csvRow, int $csvLineNumber, Context $context): voi
     $this->userRepository->persist($user);
 }
 
-public function validate(array $csvRow, ErrorList $errorList, Context $context): void
+public function validate(array $csvRow, int $csvLineNumber, ErrorList $errorList, Context $context): void
 {
     $user = $this->hydrate($csvRow);
 
@@ -310,13 +310,13 @@ namespace App;
 
 use Ttskch\Bulkony\Import\Preview\Row;
 use Ttskch\Bulkony\Import\RowVisitor\Context;
-use Ttskch\Bulkony\Import\RowVisitor\RowVisitorInterface;
+use Ttskch\Bulkony\Import\RowVisitor\PreviewableRowVisitorInterface;
 
-class UserRowVisitor implements RowVisitorInterface
+class UserRowVisitor implements PreviewableRowVisitorInterface
 {
     // ...
 
-    public function preview(array $csvRow, Row $previewRow, Context $context): void
+    public function preview(array $csvRow, int $csvLineNumber, Row $previewRow, Context $context): void
     {
         $originalUser = $this->repository->find($csvRow['id']);
         $importedUser = $this->hydrate($csvRow);
