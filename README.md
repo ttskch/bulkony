@@ -37,6 +37,7 @@ if ($importer->getErrorListCollection()->isEmpty()) {
     * [Import](#import)
         * [With validation](#with-validation)
         * [With previewing feature](#with-previewing-feature)
+        * [With preprocessing](#with-preprocessing)
 * [Getting involved](#getting-involved)
 
 </details>
