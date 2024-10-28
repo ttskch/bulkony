@@ -12,6 +12,7 @@ use Ttskch\Bulkony\Import\Preview\Preview;
 use Ttskch\Bulkony\Import\Preview\Row;
 use Ttskch\Bulkony\Import\Reader\NonUniqueHeaderTolerantReader;
 use Ttskch\Bulkony\Import\RowVisitor\Context;
+use Ttskch\Bulkony\Import\RowVisitor\PreprocessableRowVisitorInterface;
 use Ttskch\Bulkony\Import\RowVisitor\PreviewableRowVisitorInterface;
 use Ttskch\Bulkony\Import\RowVisitor\RowVisitorInterface;
 use Ttskch\Bulkony\Import\RowVisitor\ValidatableRowVisitorInterface;
@@ -21,11 +22,18 @@ use Ttskch\Bulkony\Import\Validation\ErrorListCollection;
 
 class Importer
 {
+    private Context $context;
     private ErrorListCollection $errorListCollection;
 
     public function __construct()
     {
+        $this->context = new Context();
         $this->errorListCollection = new ErrorListCollection();
+    }
+
+    public function getContext(): Context
+    {
+        return $this->context;
     }
 
     public function getErrorListCollection(): ErrorListCollection
@@ -39,24 +47,28 @@ class Importer
         /** @var \Iterator<array<string>> $csvRows */
         $csvRows = $csvReader->getRecords();
 
-        $context = new Context();
+        if ($rowVisitor instanceof PreprocessableRowVisitorInterface) {
+            foreach ($csvRows as $i => $csvRow) {
+                $rowVisitor->preprocess($csvRow, $i + 1, $this->context);
+            }
+        }
 
         foreach ($csvRows as $i => $csvRow) {
             if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
                 $errorList = new ErrorList($i + 1);
-                $rowVisitor->validate($csvRow, $i + 1, $errorList, $context);
+                $rowVisitor->validate($csvRow, $i + 1, $errorList, $this->context);
 
                 if (!$errorList->isEmpty()) {
-                    $continue = $rowVisitor->onError($csvRow, $i + 1, $errorList, $context);
+                    $continue = $rowVisitor->onError($csvRow, $i + 1, $errorList, $this->context);
                     $this->errorListCollection->upsert($errorList);
                     if (!$continue) {
                         break;
                     }
                 } else {
-                    $rowVisitor->import($csvRow, $i + 1, $context);
+                    $rowVisitor->import($csvRow, $i + 1, $this->context);
                 }
             } else {
-                $rowVisitor->import($csvRow, $i + 1, $context);
+                $rowVisitor->import($csvRow, $i + 1, $this->context);
             }
         }
     }
@@ -67,10 +79,14 @@ class Importer
         /** @var \Iterator<array<string>> $csvRows */
         $csvRows = $csvReader->getRecords();
 
-        $context = new Context();
+        if ($rowVisitor instanceof PreprocessableRowVisitorInterface) {
+            foreach ($csvRows as $i => $csvRow) {
+                $rowVisitor->preprocess($csvRow, $i + 1, $this->context);
+            }
+        }
 
         /** @var \Generator $previewRows */
-        $previewRows = call_user_func(function () use ($csvRows, $rowVisitor, $context) {
+        $previewRows = call_user_func(function () use ($csvRows, $rowVisitor) {
             foreach ($csvRows as $i => $csvRow) {
                 $previewRow = new Row($i + 1);
                 foreach ($csvRow as $csvHeading => $value) {
@@ -79,7 +95,7 @@ class Importer
 
                 if ($rowVisitor instanceof ValidatableRowVisitorInterface) {
                     $errorList = new ErrorList($i + 1);
-                    $rowVisitor->validate($csvRow, $i + 1, $errorList, $context);
+                    $rowVisitor->validate($csvRow, $i + 1, $errorList, $this->context);
                     /** @var Error $error */
                     foreach ($errorList as $error) {
                         /** @var Cell $cell */
@@ -88,7 +104,7 @@ class Importer
                     }
                 }
 
-                $rowVisitor->preview($csvRow, $i + 1, $previewRow, $context);
+                $rowVisitor->preview($csvRow, $i + 1, $previewRow, $this->context);
 
                 yield $previewRow;
             }

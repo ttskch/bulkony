@@ -336,6 +336,56 @@ Of course you can implement previewing feature with validation.
 
 In this example, if `App\UserRowVisitor` implements `ValidatableRowVisitorInterface`, `$preview` holds whole validation errors automatically. 
 
+#### With preprocessing
+
+You can preprocess all csv rows before importing and previewing and store some results in `Context`. 
+
+```php
+namespace App;
+
+use Ttskch\Bulkony\Import\Preview\Row;
+use Ttskch\Bulkony\Import\RowVisitor\Context;
+use Ttskch\Bulkony\Import\RowVisitor\PreprocessableRowVisitorInterface;
+use Ttskch\Bulkony\Import\RowVisitor\PreviewableRowVisitorInterface;
+
+class UserRowVisitor implements PreprocessableRowVisitorInterface, PreviewableRowVisitorInterface
+{
+    // ...
+
+    public function preprocess(array $csvRow, int $csvLineNumber, Context $context): void
+    {
+        $originalUser = $this->repository->find($csvRow['id']);
+        $importedUser = $this->hydrate($csvRow);
+
+        $context[sprintf('originalUser%d', $csvLineNumber)] = $originalUser;
+        $context[sprintf('importedUser%d', $csvLineNumber)] = $importedUser;
+    }
+
+    public function import(array $csvRow, int $csvLineNumber, Context $context): void
+    {
+        $user = $context[sprintf('originalUser%d', $csvLineNumber)];
+        
+        $this->userRepository->persist($user);
+    }
+
+    public function preview(array $csvRow, int $csvLineNumber, Row $previewRow, Context $context): void
+    {
+        $originalUser = $context[sprintf('originalUser%d', $csvLineNumber)];
+        $importedUser = $context[sprintf('importedUser%d', $csvLineNumber)];
+        
+        if ($originalUser->name !== $importedUser->name) {
+            $previewRow->get('name')->setChanged();
+        }
+
+        if ($originalUser->email !== $importedUser->email) {
+            $previewRow->get('email')->setChanged();
+        }
+    }
+}
+```
+
+For example, if the entity to be imported has a self-referential property and validation is required based on the member state of that property, it is necessary to pre-hydrate the entities corresponding to all rows in the CSV. This feature is useful in such cases.
+
 ## Getting involved
 
 ```shell

@@ -9,6 +9,7 @@ use Ttskch\Bulkony\Import\Importer;
 use Ttskch\Bulkony\Import\Preview\Cell;
 use Ttskch\Bulkony\Import\Preview\Row;
 use Ttskch\Bulkony\Tests\Fake\RowVisitor\AbortableValidatableRowVisitor;
+use Ttskch\Bulkony\Tests\Fake\RowVisitor\PreprocessableRowVisitor;
 use Ttskch\Bulkony\Tests\Fake\RowVisitor\PreviewableRowVisitor;
 use Ttskch\Bulkony\Tests\Fake\RowVisitor\RowVisitor;
 use Ttskch\Bulkony\Tests\Fake\RowVisitor\ValidatablePreviewableRowVisitor;
@@ -49,6 +50,25 @@ EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
 
+    public function testWithPreprocess(): void
+    {
+        // preprocessale row visitor
+        $rowVisitor = new PreprocessableRowVisitor();
+
+        ob_start();
+        $this->importer->import($this->csvFilePath, $rowVisitor);
+        $echoed = trim(strval(ob_get_clean()));
+        $expectedEchoed = <<<EOS
+[preprocess] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
+[preprocess] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
+[preprocess] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"}
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'from preprocess'
+[import] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"} with 'from preprocess'
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'from preprocess'
+EOS;
+        $this->assertEquals($expectedEchoed, $echoed);
+    }
+
     public function testWithValidatableRowVisitor(): void
     {
         // validatable row visitor
@@ -59,11 +79,11 @@ EOS;
         $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
-[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'from validation'
 [validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [validate] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"}
-[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'from validation'
 EOS;
         $this->assertEquals($expectedEchoed, $echoed);
     }
@@ -78,7 +98,7 @@ EOS;
         $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
-[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'from validation'
 [validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 EOS;
@@ -193,11 +213,11 @@ EOS2;
         $echoed = trim(strval(ob_get_clean()));
         $expectedEchoed = <<<EOS3
 [validate] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"}
-[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'context'
+[import] csv line 2: {"id":"1","name":"alice","email":"alice@example.com"} with 'from validation'
 [validate] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [onError] csv line 3: {"id":"2","name":"bob","email":"bob@example.com"}
 [validate] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"}
-[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'context'
+[import] csv line 4: {"id":"3","name":"charlie","email":"charlie@example.com"} with 'from validation'
 EOS3;
         $this->assertEquals($expectedEchoed, $echoed);
     }

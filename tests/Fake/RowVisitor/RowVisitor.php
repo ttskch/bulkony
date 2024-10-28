@@ -11,8 +11,8 @@ class RowVisitor implements RowVisitorInterface
 {
     public function import(array $csvRow, int $csvLineNumber, Context $context): void
     {
-        assert(is_string($context['from_validate_to_preview_and_import']) || is_null($context['from_validate_to_preview_and_import']));
+        assert(is_string($context['context']) || is_null($context['context']));
 
-        echo sprintf("[import] csv line %d: %s with '%s'\n", $csvLineNumber, json_encode($csvRow, JSON_UNESCAPED_UNICODE), strval($context['from_validate_to_preview_and_import']));
+        echo sprintf("[import] csv line %d: %s with '%s'\n", $csvLineNumber, json_encode($csvRow, JSON_UNESCAPED_UNICODE), strval($context['context']));
     }
 }

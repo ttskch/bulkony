@@ -19,7 +19,7 @@ class ValidatableRowVisitor extends RowVisitor implements ValidatableRowVisitorI
             $error->addMessage('Invalid email address');
         }
 
-        $context['from_validate_to_preview_and_import'] = 'context';
+        $context['context'] = 'from validation';
 
         echo sprintf("[validate] csv line %d: %s\n", $errorList->getCsvLineNumber(), json_encode($csvRow, JSON_UNESCAPED_UNICODE));
     }
