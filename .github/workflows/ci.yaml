@@ -9,11 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php:
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
+        php: [7.4, 8.0, 8.1, 8.2, 8.3]
 
     runs-on: ${{ matrix.os }}
 
@@ -22,26 +18,33 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Get Composer cache directory path
         id: composer-cache-dir-path
         run: echo "path=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache-dir-path.outputs.path }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Dependencies
-        run: |
-          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-          composer bin all install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Install composer-bin-plugin dependencies
+        if: ${{ matrix.php == '8.3' }}
+        run: composer bin all install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Execute tests
+        if: ${{ matrix.php == '8.3' }}
         run: composer tests:ci
+
+      - name: Execute tests for backward compatibility
+        if: ${{ matrix.php != '8.3' }}
+        run: composer tests:bc
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3

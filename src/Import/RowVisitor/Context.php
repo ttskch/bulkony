@@ -17,8 +17,6 @@ class Context implements \ArrayAccess, \IteratorAggregate, \Countable
 
     /**
      * @see \ArrayAccess::offsetExists()
-     *
-     * @param mixed $offset
      */
     public function offsetExists($offset): bool
     {
@@ -27,10 +25,6 @@ class Context implements \ArrayAccess, \IteratorAggregate, \Countable
 
     /**
      * @see \ArrayAccess::offsetGet()
-     *
-     * @param mixed $offset
-     *
-     * @return mixed
      */
     #[\ReturnTypeWillChange] // @todo when bump minimum php version to 8.0 remove this line
     public function offsetGet($offset)
@@ -40,9 +34,6 @@ class Context implements \ArrayAccess, \IteratorAggregate, \Countable
 
     /**
      * @see \ArrayAccess::offsetSet()
-     *
-     * @param mixed $offset
-     * @param mixed $value
      */
     public function offsetSet($offset, $value): void
     {
@@ -55,8 +46,6 @@ class Context implements \ArrayAccess, \IteratorAggregate, \Countable
 
     /**
      * @see \ArrayAccess::offsetUnset()
-     *
-     * @param mixed $offset
      */
     public function offsetUnset($offset): void
     {

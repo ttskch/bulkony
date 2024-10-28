@@ -98,11 +98,12 @@ EOS;
             foreach (['id', 'name', 'email'] as $csvHeading) {
                 /** @var Cell $cell */
                 $cell = $row->get($csvHeading);
+                assert(is_string($cell->getValue()));
                 $previewContent .= sprintf(
                     "%d %s: %s %s (%d errors)\n",
                     $row->getCsvLineNumber(),
                     $cell->getCsvHeading(),
-                    strval($cell->getValue()),
+                    $cell->getValue(),
                     $cell->isChanged() ? 'changed' : 'not-changed',
                     $cell->getError() ? count($cell->getError()->getMessages()) : 0,
                 );
@@ -150,11 +151,12 @@ EOS2;
             foreach (['id', 'name', 'email'] as $csvHeading) {
                 /** @var Cell $cell */
                 $cell = $row->get($csvHeading);
+                assert(is_string($cell->getValue()));
                 $previewContent .= sprintf(
                     "%d %s: %s %s (%d errors)\n",
                     $row->getCsvLineNumber(),
                     $cell->getCsvHeading(),
-                    strval($cell->getValue()),
+                    $cell->getValue(),
                     $cell->isChanged() ? 'changed' : 'not-changed',
                     $cell->getError() ? count($cell->getError()->getMessages()) : 0,
                 );
