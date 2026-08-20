@@ -126,7 +126,7 @@ $response->setCallback(function () use ($exporter, $rowGenerator) {
     $exporter->export('php://output', $rowGenerator);
 });
 
-return $response->send();
+return $response;
 ```
 
 ##### Laravel
